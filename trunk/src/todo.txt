@@ -1,0 +1,21 @@
+
+
+Menu System
+- Popup-Menu on GlassPane (blurring the background)?
+
+Difficulty Settings
+- faster position generation
+
+Sound
+
+Hint, full Solution
+
+Print-Out
+
+Splash Screen
+
+Possibility to drag Window on Screen
+
+Installer
+
+I18N
