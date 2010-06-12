@@ -5,10 +5,13 @@
 
 package rokudoku
 
+import java.awt.BasicStroke
+import java.awt.Color
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.Polygon
 import java.awt.RadialGradientPaint
+import java.awt.RenderingHints
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.geom.Point2D
@@ -30,11 +33,16 @@ abstract class HexComponent(fx: Int, fy:Int) extends JComponent {
   })
 
   override def paint(g: Graphics) {
+    val g2 = g.asInstanceOf[Graphics2D]
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
     val gp = new RadialGradientPaint(new Point2D.Double(fx + fy, fy), 3*fy,
      Array(0f, 1f), Array(getForeground, getBackground))
-    g.asInstanceOf[Graphics2D].setPaint(gp)
-    g.fillPolygon(polygon);
-    paintComponent(g)
+    g2.setPaint(gp)
+    g2.fillPolygon(polygon)
+    g2.setColor(Color.black)
+    g2.setStroke(new BasicStroke(1.2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND))
+    g2.drawPolygon(polygon)
+    paintComponent(g2)
   }
 
   def mouseClicked(me: MouseEvent): Unit = {}

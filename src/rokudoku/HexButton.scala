@@ -5,22 +5,16 @@
 
 package rokudoku
 
-import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.Point
-import java.awt.RenderingHints
 import java.awt.event.MouseEvent
 import java.awt.event.MouseMotionAdapter
 import javax.swing.JFrame
 import javax.swing.SwingUtilities
-import java.awt.BasicStroke
-import java.awt.Color
-import java.awt.Graphics
-import java.awt.Graphics2D
-import java.awt.RenderingHints
 import java.awt.event.MouseEvent
+import GuiUtils._
 
 abstract class HexButton(fx: Int, fy: Int) extends HexComponent(fx, fy)  {
   /*this.addMouseMotionListener(new MouseMotionAdapter {
@@ -50,19 +44,17 @@ abstract class HexButton(fx: Int, fy: Int) extends HexComponent(fx, fy)  {
 
 
 class MenuButton(fx: Int, fy: Int) extends HexButton(fx, fy) {
-  this.setBackground(Color.GREEN.darker)
-  this.setForeground(Color.GREEN)
+  this.setBackground(Color.green.darker)
+  this.setForeground(Color.green)
   override def mouseClicked(me: MouseEvent) {
-    /*SwingUtilities.getRoot(this) match {
-     case jf: JFrame => jf.dispose
-     }*/
+    MenuPane.setVisible(! MenuPane.isVisible)
   }
 
   override def paintComponent(g: Graphics) {
     val g2 = g.asInstanceOf[Graphics2D]
-    g2.setColor(Color.BLACK)
-    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-    g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND))
+    g2.setColor(Color.black)
+    alias(g2)
+    stroke(g2, 4)
     g2.drawRoundRect(fx/2, fy, fx, 2*fy, fy, fy)
     g2.drawLine(fx/2 + fy/2, fy + fy/2, 3*fx/2 - fy/2, fy + fy/2)
     g2.drawLine(fx/2 + fy/2, 2*fy, 3*fx/2 - fy/2, 2*fy)
@@ -72,8 +64,8 @@ class MenuButton(fx: Int, fy: Int) extends HexButton(fx, fy) {
 
 
 class ExitButton(fx: Int, fy: Int) extends HexButton(fx, fy) {
-  this.setBackground(Color.RED.darker)
-  this.setForeground(Color.RED)
+  this.setBackground(Color.red.darker)
+  this.setForeground(Color.red)
   override def mouseReleased(me: MouseEvent) {
     SwingUtilities.getRoot(this) match {
       case jf: JFrame => jf.dispose
@@ -82,9 +74,9 @@ class ExitButton(fx: Int, fy: Int) extends HexButton(fx, fy) {
 
   override def paintComponent(g: Graphics) {
     val g2 = g.asInstanceOf[Graphics2D]
-    g2.setColor(Color.BLACK)
-    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-    g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND))
+    g2.setColor(Color.black)
+    alias(g2)
+    stroke(g2, 4)
     g2.drawRoundRect(fx/2, fy, fx, 2*fy, fy, fy)
     g2.drawLine(fx/2 + fy/2, fy + fy/2, 3*fx/2 - fy/2, 3*fy - fy/2)
     g2.drawLine(fx/2 + fy/2, 3*fy - fy/2, 3*fx/2 - fy/2, fy + fy/2)
