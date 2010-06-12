@@ -7,11 +7,11 @@ package rokudoku
 
 import com.sun.awt.AWTUtilities
 import java.awt.Color
+import java.awt.Polygon
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
-import java.awt.geom.GeneralPath
-import java.awt.geom.Path2D
 import javax.swing.JFrame
+import javax.swing.JOptionPane
 import javax.swing.JRootPane
 import javax.swing.SwingUtilities
 
@@ -26,28 +26,32 @@ import javax.swing.SwingUtilities
 
 class HexWindow private(val fx: Int, val fy: Int) extends JFrame {
 
+  var pos = Solver.make(List(Solver.OneValuePossible, Solver.NowhereElsePossible))
+  //var pos = Solver.make(List(Solver.OneValuePossible, Solver.NowhereElsePossible, Solver.BruteForce))
+  //var pos = Solver.make(List(Solver.BruteForce))
+
   val colors = List(0xFFD700, 0xADD8E6, 0xDDA0DD, 0xEEE8AA, 0xDEB887, 0xFFA500,
                     0x90EE90).map(new Color(_))
   val cells = Map[Pos, HexCell]() ++ Grid.regions.zip(colors).flatMap(
     t => t._1.map(c => (c, new HexCell(fx, fy, t._2))))
-  val coords = Vector(701,800,901,1000,1101,1200,1301,1303,1404,1406,1507,1509,
-                      1410, 1412,1513,1515,1616,1618,1519,1521,1422,1321,1222,
-                      1224,1125,1127,1028,927,828,727,725,624,525,424,325,224,
-                      222,121,119,218,216,115,113,12,10,109,107,206,307,406,404,
-                      503,501).map(n => (n / 100, n % 100))
+  val coords = Array(600,701,800,901,1000,1101,1200,1301,1303,1404,1406,1507,1509,
+                     1410, 1412,1513,1515,1616,1618,1519,1521,1422,1321,1222,
+                     1224,1125,1127,1028,927,828,727,725,624,525,424,325,224,
+                     222,121,119,218,216,115,113,12,10,109,107,206,307,406,404,
+                     503,501)
+  val coordsX = coords.map(n => n / 100 * fx)
+  val coordsY = coords.map(n => n % 100 * fy)
 
-  setSize(new java.awt.Dimension(16*fx, 28*fy))
+  setSize(new java.awt.Dimension(16*fx+1, 28*fy+1))
   setLocationRelativeTo(null)
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   setUndecorated(true)
   getRootPane.setWindowDecorationStyle(JRootPane.NONE)
   setVisible(true)
-  val shape = new GeneralPath(Path2D.WIND_EVEN_ODD, coords.size + 1)
-  shape.moveTo (6*fx, 0)
-  coords.foreach(t =>
-    shape.lineTo(t._1*fx, t._2*fy))
-  shape.closePath
-  AWTUtilities.setWindowShape(this, shape)
+  val shape = new Polygon(coordsX, coordsY, coords.length)
+  if (AWTUtilities.isTranslucencySupported(AWTUtilities.Translucency.PERPIXEL_TRANSPARENT)) {
+    AWTUtilities.setWindowShape(this, shape)
+  }
   val panel = new HexPanel(fx, fy, 5)
   panel.add(new MenuButton(fx, fy), 7, 0)
   panel.add(new ExitButton(fx, fy), 8, 0)
@@ -56,10 +60,15 @@ class HexWindow private(val fx: Int, val fy: Int) extends JFrame {
       HexWindow.this.keyPressed(ke, t._1)}
     panel.add(t._2, t._1.x, t._1.y)}
   setContentPane(panel)
+  setGlassPane(MenuPane)
+  invalidate
+  validate
+  repaint()
 
-  var pos = Solver.make(List(Solver.OneValuePossible, Solver.NowhereElsePossible))
-  //var pos = Solver.make(List(Solver.OneValuePossible, Solver.NowhereElsePossible, Solver.BruteForce))
-  //var pos = Solver.make(List(Solver.BruteForce))
+  if (! AWTUtilities.isTranslucencySupported(AWTUtilities.Translucency.PERPIXEL_TRANSPARENT)) {
+    JOptionPane.showMessageDialog(this, "<html>I'm deeply sorry that Rokudoku looks ridiculous now,<br>" +
+    "but your operating system doesn't support transparency.</html>", "Warning", JOptionPane.WARNING_MESSAGE);
+  }
 
   pos.values.foreach{t => cells(t._1).value = (t._2 + '0').toChar
                      cells(t._1).editable = false}

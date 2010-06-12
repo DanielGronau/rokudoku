@@ -1,4 +1,5 @@
-
+TODO
+====
 
 Menu System
 - Popup-Menu on GlassPane (blurring the background)?
@@ -8,14 +9,17 @@ Difficulty Settings
 
 Sound
 
-Hint, full Solution
+Hint, full solution
 
 Print-Out
-
-Splash Screen
 
 Possibility to drag Window on Screen
 
 Installer
 
 I18N
+
+DONE
+====
+Catches error for OS without transparency, apologizes
+Splash Screen
